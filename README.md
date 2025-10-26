@@ -55,29 +55,29 @@ Download the files and place them in `src/r_run/data/`.
 
 Check Docker installation with:
 
-``` docker --version
+```docker --version```
 
 
 **Running the Python Model**
 Navigate to Python scripts:
-``` cd src/run
+```cd src/run```
 
 **Build the Docker image:**
-``` docker build -t titanic-python-model .
+```docker build -t titanic-python-model .```
 
 **Run the container:**
-``` docker run --rm -v "%cd%:/app" titanic-python-model
+```docker run --rm -v "%cd%:/app" titanic-python-model```
 
 The Python script (predict.py) will execute inside the container and print results in the terminal.
 
 **Running the R Model**
 Navigate to the R container folder:
-``` cd src/r_run
+```cd src/r_run```
 
 **Build the Docker image:**
-``` docker build -t titanic-r-model .
+```docker build -t titanic-r-model .```
 
 **Run the container:**
-``` docker run --rm titanic-r-model
+```docker run --rm titanic-r-model```
 
 The R script (predict.R) will execute inside the container and print results in the terminal.
