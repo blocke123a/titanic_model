@@ -6,6 +6,7 @@ This repository demonstrates predictive modeling for the Titanic dataset using b
 
 ## Repository Structure
 
+```
 titanic_model/
 │
 ├─ src/
@@ -28,7 +29,7 @@ titanic_model/
 ├─ Dockerfile # Python Dockerfile
 ├─ requirements.txt # Python dependencies
 └─ README.md
-
+```
 
 ## Dataset Instructions
 
@@ -54,29 +55,29 @@ Download the files and place them in `src/r_run/data/`.
 
 Check Docker installation with:
 
-docker --version
+``` docker --version
 
 
-Running the Python Model
+**Running the Python Model**
 Navigate to Python scripts:
-cd src/run
+``` cd src/run
 
-Build the Docker image:
-docker build -t titanic-python-model .
+**Build the Docker image:**
+``` docker build -t titanic-python-model .
 
-Run the container:
-docker run --rm -v "%cd%:/app" titanic-python-model
+**Run the container:**
+``` docker run --rm -v "%cd%:/app" titanic-python-model
 
 The Python script (predict.py) will execute inside the container and print results in the terminal.
 
-Running the R Model
+**Running the R Model**
 Navigate to the R container folder:
-cd src/r_run
+``` cd src/r_run
 
-Build the Docker image:
-docker build -t titanic-r-model .
+**Build the Docker image:**
+``` docker build -t titanic-r-model .
 
-Run the container:
-docker run --rm titanic-r-model
+**Run the container:**
+``` docker run --rm titanic-r-model
 
 The R script (predict.R) will execute inside the container and print results in the terminal.
