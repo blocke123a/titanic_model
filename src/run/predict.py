@@ -48,8 +48,10 @@ test_df["Sex"] = test_df["Sex"].map({"male": 0, "female": 1})
 
 X_test = test_df[features]
 
-print("Making predictions on test dataset...")
-test_predictions = model.predict(X_test)
+print("Generating predictions on test set...")
+test_df["Survived_Prediction"] = model.predict(X_test)
 
-print("Predictions on test data (first 10):", test_predictions[:10])
-print("Script completed successfully.")
+output_file = "python_predictions_test.csv"
+test_df[["PassengerId", "Survived_Prediction"]].to_csv(output_file, index=False)
+
+print(f"Predictions saved to {output_file}")

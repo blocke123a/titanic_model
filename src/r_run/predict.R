@@ -3,72 +3,70 @@ library(readr)
 library(dplyr)
 library(caret)
 
-print("Packages loaded successfully.")
+cat("Packages loaded successfully.\n")
 
 # Load the training data
-print("Loading training data...")
+cat("Loading training data...\n")
 train_data <- read_csv("data/train.csv")
-print(paste("Training records loaded:", nrow(train_data)))
+cat(paste("Training records loaded:", nrow(train_data), "\n"))
 
-# Preview structure
-print("Training data columns:")
-print(names(train_data))
-
+# Preserve PassengerId? Not needed for training
 # Select basic features
-print("Selecting key features: Survived, Pclass, Sex, Age, SibSp, Parch, Fare...")
+cat("Selecting key features: Survived, Pclass, Sex, Age, SibSp, Parch, Fare...\n")
 train_data <- train_data %>%
   select(Survived, Pclass, Sex, Age, SibSp, Parch, Fare)
 
 # Handle missing values
-print("Filling missing Age values with median...")
+cat("Handling missing Age values...\n")
 train_data$Age[is.na(train_data$Age)] <- median(train_data$Age, na.rm = TRUE)
 
-print("Encoding Sex as a factor...")
+# Encode categorical variables
 train_data$Sex <- factor(train_data$Sex, levels = c("male", "female"))
 
 # Convert Survived to factor for classification
 train_data$Survived <- factor(train_data$Survived)
 
-print("Data preprocessing complete.")
+cat("Training logistic regression model...\n")
+model <- train(
+  Survived ~ .,
+  data = train_data,
+  method = "glm",
+  family = "binomial"
+)
 
-# Build logistic regression model
-print("Training logistic regression model...")
-model <- train(Survived ~ ., 
-               data = train_data, 
-               method = "glm", 
-               family = "binomial")
-
-print("Model training complete.")
-print("Model summary:")
-print(summary(model))
-
-# Training accuracy
-train_predictions <- predict(model, train_data)
-train_accuracy <- mean(train_predictions == train_data$Survived)
-print(paste("Training Accuracy:", round(train_accuracy, 4)))
+cat("Model training complete.\n")
 
 # Load test dataset
-print("Loading test dataset...")
+cat("Loading test dataset...\n")
 test_data <- read_csv("data/test.csv")
-print(paste("Test records loaded:", nrow(test_data)))
+cat(paste("Test records loaded:", nrow(test_data), "\n"))
 
-# Select same features
-print("Selecting matching features in test set...")
+# Store PassengerId for output
+passenger_ids <- test_data$PassengerId
+
+# Select same predictor features as training
 test_data <- test_data %>%
   select(Pclass, Sex, Age, SibSp, Parch, Fare)
 
-# Handle missing Age values in test set
-print("Filling missing Age values in test set...")
+# Handle missing values in test set
 test_data$Age[is.na(test_data$Age)] <- median(test_data$Age, na.rm = TRUE)
-
-print("Encoding Sex as a factor in test set...")
+test_data$Fare[is.na(test_data$Fare)] <- median(test_data$Fare, na.rm = TRUE)
 test_data$Sex <- factor(test_data$Sex, levels = c("male", "female"))
 
-print("Predicting test survivability...")
-test_predictions <- predict(model, test_data)
+# Generate predictions
+cat("Generating predictions...\n")
+test_pred <- predict(model, newdata = test_data, type = "raw")
 
-print("Prediction complete.")
-print("First 10 test predictions:")
-print(head(test_predictions, 10))
+# Convert factor predictions to numeric (0 or 1)
+test_pred_num <- ifelse(test_pred == "1", 1, 0)
 
-print("Script finished successfully!")
+# Save predictions to CSV
+output <- data.frame(
+  PassengerId = passenger_ids,
+  Survived = test_pred_num
+)
+
+output_file <- "R_predictions_test.csv"
+write_csv(output, output_file)
+
+cat(paste("Predictions saved to", output_file, "\n"))
