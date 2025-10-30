@@ -1,5 +1,13 @@
 venv/
-**/data/
+src/data/*.csv
+src/r_run/data/*.csv
+
+# keep the data folders though
+!src/data/
+!src/data/.gitkeep
+!src/r_run/data/
+!src/r_run/data/.gitkeep
+
 .DS_Store
 *.pyc
 __pycache__/
